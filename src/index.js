@@ -1,7 +1,10 @@
 require('dotenv').config();
-const { Client, IntentsBitField, GuildMember, ModalBuilder,TextInputBuilder,
-     TextInputStyle, ActionRowBuilder, Events  } = require('discord.js');
-const sheetdb = require('./sheetdb.js')
+const { Client, IntentsBitField, GuildMember, SlashCommandBuilder, Events, Collection } = require('discord.js');
+const fs = require('node:fs');
+const path = require('node:path');
+
+const sheetdb = require('./sheetdb.js');
+const commandHandler = require('./commands/example/ping.js');
 const client = new Client({
     intents: [
         IntentsBitField.Flags.Guilds,
@@ -15,6 +18,27 @@ const guildMember = new GuildMember({
 
 
 })
+
+
+client.commands = new Collection();
+const foldersPath = path.join(__dirname, 'commands');
+const commandFolders = fs.readdirSync(foldersPath);
+
+// Grab commands from command directory
+for (const folder of commandFolders) {
+	const commandsPath = path.join(foldersPath, folder);
+	const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+	for (const file of commandFiles) {
+		const filePath = path.join(commandsPath, file);
+		const command = require(filePath);
+		// Set a new item in the Collection with the key as the command name and the value as the exported module
+		if ('data' in command && 'execute' in command) {
+			client.commands.set(command.data.name, command);
+		} else {
+			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+		}
+	}
+}
 
 
 client.on('ready', (c) => {
@@ -51,60 +75,40 @@ client.on('messageCreate', (message) => {
 
 });
 
-client.on('interactionCreate', async (interaction) => {
+// Interactions are modal inputs, slash commands, etc.
+client.on(Events.InteractionCreate, async (interaction) => {
+    // return if not slash command
     if (!interaction.isChatInputCommand) return;
 
-    console.log(interaction.commandName);
-    if (interaction.commandName === 'add-buddy') {
-        const modal = new ModalBuilder()
-            .setCustomId('buddy-modal')
-            .setTitle('Add Buddies')
+    const command = interaction.client.commands.get(interaction.commandName);
 
-        // Create the text input components
-        const firstBuddy = new TextInputBuilder()
-            .setCustomId('firstBuddy')
-            // The label is the prompt the user sees for this input
-            .setLabel("First Buddy")
-            // Short means only a single line of text
-            .setStyle(TextInputStyle.Short);
+    if (!command) {
+        console.error(`No command matching ${interaction.commandName} was found.`);
+        return;
+    }
 
-        const secondBuddy = new TextInputBuilder()
-            .setCustomId('secondBuddy')
-            .setLabel("Second Buddy")
-            .setStyle(TextInputStyle.Short);
-    
-        const thirdBuddy = new TextInputBuilder()
-        .setCustomId('thirdBuddy')
-        .setLabel("Third Buddy")
-        .setStyle(TextInputStyle.Short);
-
-        // An action row only holds one text input,
-        // so you need one action row per text input.
-        const firstActionRow = new ActionRowBuilder().addComponents(firstBuddy);
-        const secondActionRow = new ActionRowBuilder().addComponents(secondBuddy);
-        const thirdActionRow = new ActionRowBuilder().addComponents(thirdBuddy);
-
-        modal.addComponents(firstActionRow, secondActionRow, thirdActionRow);
-
-        await interaction.showModal(modal);
-        console.log('in add-buddy handler');
+    try {
+        await command.execute(interaction);
+    } catch (error) {
+        console.error(error);
+        if (interaction.replied || interaction.deferred) {
+            await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
+        } else {
+            await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+        }
     }
 });
 
-client.on(Events.InteractionCreate, interaction =>{
+
+
+
+client.on(Events.InteractionCreate, interaction => {
     let redefenders_test_id = 1165057140466122802;
-    if(interaction.commandName === 'reminder'){
+    if (interaction.commandName === 'reminder') {
         interaction.reply(`Reminder! @<${redefenders_test_id}>, @redefender, @buddy3 Cycle ends tonight. Please nominate new buddies before then by typing /add-buddy`)
     }
 
 })
-
-client.on(Events.InteractionCreate, interaction => {
-	if (!interaction.isModalSubmit()) return;
-	console.log(interaction);
-    interaction.reply('Modal submitted!');
-});
-
 
 client.login(process.env.TOKEN)
 

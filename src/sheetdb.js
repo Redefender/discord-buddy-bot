@@ -4,7 +4,7 @@ const moment = require('moment');
 
 let postNewJoiner = (newMember) => {
     console.log('newMember in sheetDB is ' + JSON.stringify(newMember))
-    axios.post(NEW_JOINER_LIST_ID, {
+    axios.post(process.env.NEW_JOINER_LIST_ID, {
         data:{
             username: newMember.displayName,
             userId: newMember.userId,

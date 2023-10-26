@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const sheetdb = require('./sheetdb.js');
-const commandHandler = require('./commands/example/ping.js');
+
 const client = new Client({
     intents: [
         IntentsBitField.Flags.Guilds,
@@ -14,11 +14,6 @@ const client = new Client({
         IntentsBitField.Flags.GuildPresences,
     ],
 });
-const guildMember = new GuildMember({
-
-
-})
-
 
 client.commands = new Collection();
 const foldersPath = path.join(__dirname, 'commands');

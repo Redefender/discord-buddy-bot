@@ -24,19 +24,22 @@ module.exports = {
         const buddy2 = interaction.options.getUser('buddy2');
         const buddy3 = interaction.options.getUser('buddy3');
 
-
-        const postNewBuddies = new Promise(function(resolve, reject){
+        const postNewBuddies = new Promise(function (resolve, reject) {
             console.log('inside executor function')
-            try{
+            try {
                 sheetDB.postNewBuddies(buddy1, buddy2, buddy3);
-                let buddies = [buddy1,buddy2,buddy3];
+                let buddies = [buddy1, buddy2, buddy3];
                 resolve(buddies);
-            } catch(error){
+            } catch (error) {
                 reject(error)
             }
-            
+
         });
-        postNewBuddies.then((buddies)=>{
+        postNewBuddies.then((buddies) => {
+            /*
+            * Wish I could put it all in one request, but
+            * batch_update is a premium feature in sheetDB
+            */
             console.log("posted to currCycle, now update first buddy in buddy pool: ");
             sheetDB.updateBuddyPool(buddies[0]);
             console.log("posted to currCycle, now update second buddy in buddy pool: ");
@@ -44,10 +47,9 @@ module.exports = {
             console.log("posted to currCycle, now update third buddy in buddy pool: ");
             sheetDB.updateBuddyPool(buddies[2]);
         })
-        .catch((e)=>{
-            console.log(e);
-        })
-
+            .catch((e) => {
+                console.log(e);
+            })
 
         await interaction.reply(`${buddy1}, ${buddy2}, and ${buddy3} was added to the upcoming cycle!`);
     }

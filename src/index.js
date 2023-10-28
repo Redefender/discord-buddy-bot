@@ -1,6 +1,7 @@
 require('dotenv').config();
 const { Client, IntentsBitField, GuildMember, SlashCommandBuilder, Events, Collection } = require('discord.js');
 const fs = require('node:fs');
+const parser = require('./Utils/parser')
 const path = require('node:path');
 
 const sheetdb = require('./sheetdb.js');
@@ -46,7 +47,7 @@ client.on('messageCreate', (message) => {
 
     if (message.author.bot && message.author.username == "MEE6" && message.content.includes("Hey ")) {
 
-        newJoinerId = parseUserIDFromMessage(message.content);
+        newJoinerId = parser.parseUserIDFromMessage(message.content);
 
         //iterate through current member list and match with newjoiner id
         client.guilds.fetch(process.env.GUILD_ID).then(guild => {
@@ -94,9 +95,6 @@ client.on(Events.InteractionCreate, async (interaction) => {
     }
 });
 
-
-
-
 client.on(Events.InteractionCreate, interaction => {
     let redefenders_test_id = 1165057140466122802;
     if (interaction.commandName === 'reminder') {
@@ -107,22 +105,3 @@ client.on(Events.InteractionCreate, interaction => {
 
 client.login(process.env.TOKEN)
 
-/*
-**Welcome Message is formatted as "Hey <102425264>, ...."
-*/
-function parseUserIDFromMessage(message) {
-
-    messageList = message.split(' ');
-
-    unparsedUserID = messageList[1];
-
-    // take out <@ >
-    userID = unparsedUserID.replace('<', '');
-    userID = userID.replace('@', '');
-    userID = userID.replace('>', '');
-
-    //take out ,
-    userID = userID.replace(',', '');
-
-    return userID;
-}

@@ -31,7 +31,6 @@ let postNewBuddies = (buddy1, buddy2, buddy3) => {
             {
                 'currentBuddy': buddy1.username,
                 'userId': buddy1.id,
-
             },
 
             {
@@ -43,45 +42,18 @@ let postNewBuddies = (buddy1, buddy2, buddy3) => {
                 'currentBuddy': buddy3.username,
                 'userId': buddy3.id
             }
-
-
         ]
     });
 }
 
-let updateBuddyPool = (buddy) => { //buddy1, buddy2,buddy3
+let updateBuddyPool = (buddy) => {
 
-    /*
-    *
-    * Didn't want to do this but batch_update is a premium feature from sheetDb API, slowly starting
-    * to realize I might have to use an actual DB
-    * 
-    * */
-   console.log('buddy is ' + JSON.stringify(buddy))
+    console.log('buddy is ' + JSON.stringify(buddy))
 
     axios.patch(process.env.BUDDY_LIST_ID + '/userId/' + buddy.id, {
 
-
         'numTimesServed': 'INCREMENT'
-
     })
-
-    // axios.patch(process.env.BUDDY_LIST_ID + '/userId/' + buddy2.id, {
-
-
-    //     'numTimesServed': 'INCREMENT'
-
-    // })
-
-
-    // axios.patch(process.env.BUDDY_LIST_ID + '/userId/' + buddy3.id, {
-
-
-    //     'numTimesServed': 'INCREMENT'
-
-    // })
-
-
 
 }
 module.exports = {

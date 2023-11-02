@@ -1,6 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
 const sheetDB = require('../../sheetdb.js');
-const axios = require('axios');
 const parser = require('../../Utils/parser.js')
 const data = new SlashCommandBuilder()
     .setName('add-buddies')

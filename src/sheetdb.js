@@ -56,6 +56,19 @@ let updateBuddyPool = (buddy) => {
     })
 
 }
+
+let fetchBuddyCycleDates = () =>{
+    return axios.get(process.env.CURRENT_BUDDY_CYCLE_ID + '?single_object=true')
+        .then((currentBuddyCycleRow)=>{
+            console.log((currentBuddyCycleRow));
+        })
+}
+
+let fetchBuddyPool = () =>{
+    return axios.get(process.env.BUDDY_LIST_ID)
+}
 module.exports = {
-    postNewJoiner, postNewBuddies, updateBuddyPool
+    postNewJoiner, postNewBuddies, updateBuddyPool, fetchBuddyCycleDates,
+        fetchBuddyPool
+
 }

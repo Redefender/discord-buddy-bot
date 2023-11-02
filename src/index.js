@@ -41,6 +41,7 @@ for (const folder of commandFolders) {
 client.on('ready', (c) => {
     console.log(`${c.user.username} is online`);
 
+
 });
 
 client.on('messageCreate', async (message) => {

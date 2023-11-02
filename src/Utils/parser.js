@@ -22,11 +22,11 @@ module.exports = {
 
     formatBuddyCycleThreadMessage: (buddies) =>{
         let formattedMessage = 
-        `current buddy cycle: 10/29/23-11/12/23\n Current buddies:
-        ${buddies[0]}
-        ${buddies[1]}
-        ${buddies[2]}`
+            "Current buddy cycle: 10/29/23-11/12/23\nCurrent buddies:\n" + 
+            `${buddies[0]}\n` +
+            `${buddies[1]}\n` +
+            `${buddies[2]}`
 
         return formattedMessage;
-    },
+    }
 }

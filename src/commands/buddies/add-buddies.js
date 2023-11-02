@@ -50,8 +50,7 @@ module.exports = {
 
                 interaction.client.channels.fetch(process.env.BUDDY_CYCLE_THREAD_ID)
                     .then(async channel => {
-                        //parser.formatBuddyCycleThreadMessage(buddies)
-                        console.log('hope this shit only appears once');
+
                         console.log('the channel: ' + JSON.stringify(channel));
                         await channel.send(parser.formatBuddyCycleThreadMessage(buddies));
                     });

@@ -65,10 +65,14 @@ let fetchBuddyCycleDates = () =>{
 }
 
 let fetchBuddyPool = () =>{
-    return axios.get(process.env.BUDDY_LIST_ID)
+    return axios.get(process.env.BUDDY_LIST_ID);
+}
+
+let fetchNewJoiners = () =>{
+    return axios.get(process.env.NEW_JOINER_LIST_ID);
 }
 module.exports = {
     postNewJoiner, postNewBuddies, updateBuddyPool, fetchBuddyCycleDates,
-        fetchBuddyPool
+        fetchBuddyPool, fetchNewJoiners
 
 }

@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder } = require('discord.js');
 const sheetDB = require('../../sheetdb.js');
 const embeds = require('../../Utils/embeds.js');
 const data = new SlashCommandBuilder()

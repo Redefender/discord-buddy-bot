@@ -18,5 +18,15 @@ module.exports = {
         userID = userID.replace(',', '');
 
         return userID;
-    }
+    },
+
+    formatBuddyCycleThreadMessage: (buddies) =>{
+        let formattedMessage = 
+        `current buddy cycle: 10/29/23-11/12/23\n Current buddies:
+        ${buddies[0]}
+        ${buddies[1]}
+        ${buddies[2]}`
+
+        return formattedMessage;
+    },
 }

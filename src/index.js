@@ -1,10 +1,11 @@
 require('dotenv').config();
-const { Client, IntentsBitField, GuildMember, SlashCommandBuilder, Events, Collection } = require('discord.js');
+const { Client, IntentsBitField, GuildMember, SlashCommandBuilder, Events, Collection, ThreadManager } = require('discord.js');
 const fs = require('node:fs');
-const parser = require('./Utils/parser')
+const parser = require('./Utils/parser.js');
 const path = require('node:path');
 
 const sheetdb = require('./sheetdb.js');
+const { threadId } = require('node:worker_threads');
 
 const client = new Client({
     intents: [
@@ -22,18 +23,18 @@ const commandFolders = fs.readdirSync(foldersPath);
 
 // Grab commands from command directory
 for (const folder of commandFolders) {
-	const commandsPath = path.join(foldersPath, folder);
-	const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
-	for (const file of commandFiles) {
-		const filePath = path.join(commandsPath, file);
-		const command = require(filePath);
-		// Set a new item in the Collection with the key as the command name and the value as the exported module
-		if ('data' in command && 'execute' in command) {
-			client.commands.set(command.data.name, command);
-		} else {
-			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
-		}
-	}
+    const commandsPath = path.join(foldersPath, folder);
+    const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+    for (const file of commandFiles) {
+        const filePath = path.join(commandsPath, file);
+        const command = require(filePath);
+        // Set a new item in the Collection with the key as the command name and the value as the exported module
+        if ('data' in command && 'execute' in command) {
+            client.commands.set(command.data.name, command);
+        } else {
+            console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+        }
+    }
 }
 
 
@@ -42,8 +43,8 @@ client.on('ready', (c) => {
 
 });
 
-client.on('messageCreate', (message) => {
-
+client.on('messageCreate', async (message) => {
+    if(message.author == client.user) return;
 
     if (message.author.bot && message.author.username == "MEE6" && message.content.includes("Hey ")) {
 
